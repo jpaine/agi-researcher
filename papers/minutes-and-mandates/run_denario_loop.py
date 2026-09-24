@@ -4,9 +4,16 @@
 Locks the idea (working title + claim + Angle 1), then asks Denario for a
 methodology draft. Does NOT call get_results or get_paper.
 
+Pinned models (keys into denario.models / vendor/denario/denario/llm.py):
+  Flagship chat / method generator : gpt-5
+  Reasoning / review / format       : o3-mini
+  Fast-mode single LLM             : gpt-5  (not gemini-2.0-flash)
+
+Do not put API keys in the repo. Set them in the environment only.
+
 Required environment (see Denario docs):
-  OPENAI_API_KEY          strongly recommended / required for many modules
-  GOOGLE_API_KEY          used by default fast-mode Gemini models
+  OPENAI_API_KEY          required for the pinned OpenAI models above
+  GOOGLE_API_KEY          optional (only if you override --llm to a Gemini id)
   ANTHROPIC_API_KEY       optional
   PERPLEXITY_API_KEY      optional (literature)
   FUTURE_HOUSE_API_KEY    optional
@@ -15,7 +22,7 @@ Required environment (see Denario docs):
 
 Usage (from repo root, Denario installed):
   python3 papers/minutes-and-mandates/run_denario_loop.py
-  python3 papers/minutes-and-mandates/run_denario_loop.py --mode fast
+  python3 papers/minutes-and-mandates/run_denario_loop.py --mode cmbagent
   python3 papers/minutes-and-mandates/run_denario_loop.py --dry-run
 """
 
@@ -33,6 +40,10 @@ CONSTRAINTS = PROJECT_DIR / "constraints.md"
 IDEA_LOCKED = PROJECT_DIR / "idea_locked.md"
 INPUT_FILES = PROJECT_DIR / "input_files"
 CRITIQUE_PROMPT = PROJECT_DIR / "prompts" / "critique_pass.md"
+
+# Newest OpenAI ids registered in vendor/denario/denario/llm.py (as of submodule pin).
+MODEL_FLAGSHIP = "gpt-5"
+MODEL_REASONING = "o3-mini"
 
 # Env vars Denario commonly expects (presence checked; values never printed).
 ENV_VARS = (
@@ -93,15 +104,19 @@ def dry_run() -> int:
     print("Dry run — wrote locked inputs only (no Denario LLM calls):")
     print(f"  {desc_out}")
     print(f"  {idea_out}")
+    print(f"Pinned models (unused in dry-run): flagship={MODEL_FLAGSHIP}, reasoning={MODEL_REASONING}")
     print(f"Critique prompt (manual second pass): {CRITIQUE_PROMPT}")
     return 0
 
 
-def run(mode: str) -> int:
+def run(mode: str, llm: str) -> int:
     status = _print_env_status()
-    if not status.get("OPENAI_API_KEY") and not status.get("GOOGLE_API_KEY"):
+    # Pinned defaults are OpenAI; require OPENAI_API_KEY unless user overrode to a non-OpenAI id.
+    needs_openai = llm.startswith("gpt-") or llm.startswith("o3") or mode == "cmbagent"
+    if needs_openai and not status.get("OPENAI_API_KEY"):
         print(
-            "\nNo OPENAI_API_KEY or GOOGLE_API_KEY in the environment.\n"
+            "\nOPENAI_API_KEY is not set. Pinned Denario models "
+            f"({MODEL_FLAGSHIP} / {MODEL_REASONING}) need it.\n"
             "Refusing to call Denario. Re-run with keys set, or use --dry-run.\n",
             file=sys.stderr,
         )
@@ -109,7 +124,7 @@ def run(mode: str) -> int:
 
     _ensure_vendor_on_path()
     try:
-        from denario import Denario
+        from denario import Denario, models
     except ImportError as exc:
         print(
             "Could not import denario. Install with:\n"
@@ -118,6 +133,15 @@ def run(mode: str) -> int:
             file=sys.stderr,
         )
         raise SystemExit(1) from exc
+
+    for key in {llm, MODEL_FLAGSHIP, MODEL_REASONING}:
+        if key not in models:
+            print(
+                f"Model id {key!r} is not in denario.models. "
+                f"Available: {sorted(models.keys())}",
+                file=sys.stderr,
+            )
+            return 1
 
     desc = build_data_description()
     idea = build_locked_idea()
@@ -132,8 +156,21 @@ def run(mode: str) -> int:
     print("Setting locked idea (title + claim + Angle 1); skipping get_idea()...")
     den.set_idea(idea)
 
-    print(f"Generating methodology with Denario.get_method(mode={mode!r})...")
-    den.get_method(mode=mode)
+    print(
+        f"Generating methodology with Denario.get_method(mode={mode!r}) "
+        f"using flagship={MODEL_FLAGSHIP}, reasoning={MODEL_REASONING}, fast_llm={llm}..."
+    )
+    if mode == "fast":
+        den.get_method(mode="fast", llm=llm)
+    else:
+        den.get_method(
+            mode="cmbagent",
+            method_generator_model=MODEL_FLAGSHIP,
+            planner_model=MODEL_FLAGSHIP,
+            plan_reviewer_model=MODEL_REASONING,
+            orchestration_model=MODEL_FLAGSHIP,
+            formatter_model=MODEL_REASONING,
+        )
 
     idea_path = INPUT_FILES / "idea.md"
     methods_path = INPUT_FILES / "methods.md"
@@ -155,7 +192,12 @@ def main() -> int:
         "--mode",
         choices=("fast", "cmbagent"),
         default="fast",
-        help="Denario get_method mode (default: fast)",
+        help="Denario get_method mode (default: fast with pinned gpt-5)",
+    )
+    parser.add_argument(
+        "--llm",
+        default=MODEL_FLAGSHIP,
+        help=f"Fast-mode LLM id in denario.models (default: {MODEL_FLAGSHIP})",
     )
     parser.add_argument(
         "--dry-run",
@@ -167,7 +209,7 @@ def main() -> int:
     if args.dry_run:
         _print_env_status()
         return dry_run()
-    return run(args.mode)
+    return run(args.mode, args.llm)
 
 
 if __name__ == "__main__":
