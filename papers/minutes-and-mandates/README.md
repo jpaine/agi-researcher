@@ -4,7 +4,7 @@
 | --- | --- |
 | **Slug** | `minutes-and-mandates` |
 | **Role** | Denario `project_dir` for idea/method **critique** (not a finished paper) |
-| **Status** | **Awaiting API keys** for idea/method critique loop |
+| **Status** | Method draft patched after critique; Gate A prep (cards + smoke scaffold). No pilot metrics. |
 | **Brainstorm source** | [`../../brainstorm/minutes-and-mandates/`](../../brainstorm/minutes-and-mandates/) (`BRIEF.md`, `IDEA.md`, `GO_NO_GO.md`) |
 
 ## Hard rules
@@ -13,7 +13,7 @@
 2. Denario idea/method outputs under `input_files/` are **drafts to critique**, not results and not submission-ready text.
 3. **Do not invent experimental results.** No catch rates, human-study numbers, or SOTA claims until measured.
 4. **Do not call `get_paper` / `get_results` yet.** This scaffold stops at locked idea + method draft (+ optional critique pass).
-5. Workshop / short-paper path first (MASO → AAAI / ICLR workshops). Not main-conference SOTA.
+5. Workshop path: **AAAI-27** primary, **ICLR 2027 workshop** backup. MASO skipped. Not main-conference SOTA.
 
 ## Files
 

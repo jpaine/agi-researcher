@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "judge_output.v0",
+  "title": "Org-policy judge decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision", "matched_cards", "rationale"],
+  "properties": {
+    "decision": {
+      "enum": ["allow", "escalate", "block"]
+    },
+    "matched_cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["card_id", "clause_id"],
+        "properties": {
+          "card_id": {"type": "string"},
+          "clause_id": {"type": "string"}
+        }
+      }
+    },
+    "rationale": {"type": "string"},
+    "risk_score": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Optional analysis field. Must not be shown in the human review UI."
+    }
+  }
+}

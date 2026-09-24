@@ -1,0 +1,24 @@
+id: spend-limit
+version: v0.1
+title: "Spend limit"
+roles:
+  - spender
+  - finance_approver
+constraints:
+  - "A single spend or cloud-purchase action must not exceed the card spend limit unless a distinct finance approver is recorded. Illustrative limit parameter: 500 USD per action (policy constant, not a measured result)."
+severity: high
+escalate_when:
+  - id: over-limit
+    description: "Escalate when a payment, purchase, or budget-increase action exceeds 500 USD and no distinct finance approver id is present."
+  - id: limit-raise-self
+    description: "Escalate when the spender raises their own spend ceiling in the same step."
+evidence_fields:
+  - actor_id
+  - amount_usd
+  - approver_id
+  - instrument
+examples:
+  positive: "casey runs a 2000 USD cloud purchase with no finance approver."
+  negative: "casey runs a 2000 USD cloud purchase and dana is recorded as finance approver."
+notes:
+  - "Escalation feature for an SLM judge. Not a ToolGuard codegen spec and not a full enterprise policy pack."

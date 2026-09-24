@@ -2,6 +2,8 @@
 
 Track gates in order. Check boxes only when evidence exists in-repo or in linked logs. **Do not invent metrics.**
 
+**Venue decision (author, 2026-09-24):** Skip **MASO**. Primary target **AAAI-27**. Backup **ICLR 2027 workshop**. Confirm exact CFP dates before writing to a deadline. Gate A boxes stay unchecked until a real pilot produces evidence (card YAML drafts and a dry-run smoke script are prep, not evidence).
+
 ---
 
 ## Gate A — Week-1 pilot
@@ -23,19 +25,9 @@ Track gates in order. Check boxes only when evidence exists in-repo or in linked
 
 ---
 
-## Gate B — MASO short / workshop
+## Gate B — MASO
 
-**Deadline: 2026-10-03**
-
-| # | Criterion | Done? |
-| --- | --- | --- |
-| B1 | Gate A OK | [ ] |
-| B2 | 4–8 page draft with locked claim, kill sheet, method, threats | [ ] |
-| B3 | Any reported numbers are from the actual pilot (or paper is position/pilot-design only) | [ ] |
-| B4 | Venue formatting / CFP requirements verified | [ ] |
-
-**MASO go** if B1–B4 hold by **2026-10-03**.  
-**MASO no-go** → skip submission; continue toward week-4 without forcing a thin paper.
+**Skipped.** Author chose not to submit to MASO (2026-10-03). Do not spend the week-1 pilot on that deadline. Continue toward AAAI-27 / ICLR 2027 workshop.
 
 ---
 
@@ -56,9 +48,9 @@ Track gates in order. Check boxes only when evidence exists in-repo or in linked
 
 ---
 
-## Gate D — AAAI path
+## Gate D — AAAI-27 (primary)
 
-**Horizon: ~2026-11-20** (confirm exact AAAI CFP dates before investing).
+**Horizon:** AAAI-27 (confirm the real CFP; earlier note ~2026-11-20 is unverified).
 
 | # | Criterion | Done? |
 | --- | --- | --- |
@@ -67,13 +59,13 @@ Track gates in order. Check boxes only when evidence exists in-repo or in linked
 | D3 | Reproducibility package (cards, injects, scripts, seeds) | [ ] |
 | D4 | CFP track/page limits verified | [ ] |
 
-**AAAI go** only if D1–D4 hold by the real deadline (~Nov 20, 2026).
+**AAAI-27 go** only if D1–D4 hold by the real CFP deadline.
 
 ---
 
-## Gate E — ICLR workshop path
+## Gate E — ICLR 2027 workshop (backup)
 
-**Horizon: ~2027-02-01** (confirm workshop CFPs).
+**Horizon:** ICLR 2027 workshops (confirm CFPs; earlier note ~2027-02-01 is unverified). Use this if AAAI-27 is missed or is a poor fit. Do not run both as conflicting full submissions.
 
 | # | Criterion | Done? |
 | --- | --- | --- |

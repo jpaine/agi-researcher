@@ -1,30 +1,22 @@
-# Org-policy cards (names only)
+# Org-policy cards
 
-Week-0 lock: **ten card names**. YAML bodies are **week-1** work — do **not** invent full policy YAML here.
+**Status:** bodies drafted (schema + YAML + matched prose). Week-1 **eval numbers are not here** and must not be invented.
 
-| # | Card id (suggested) | Name |
-| --- | --- | --- |
-| 1 | `sod-author-ne-approver` | SoD: author ≠ approver |
-| 2 | `sod-requester-ne-payer` | SoD: requester ≠ payer |
-| 3 | `spend-limit` | Spend limit |
-| 4 | `pii-egress` | PII egress |
-| 5 | `secrets` | Secrets |
-| 6 | `prod-write` | Prod write |
-| 7 | `retention` | Retention |
-| 8 | `cross-tenant` | Cross-tenant |
-| 9 | `irreversible-delete` | Irreversible delete |
-| 10 | `external-exfil` | External exfil |
+| # | Card id | Name | YAML | Prose (Condition B) |
+| --- | --- | --- | --- | --- |
+| 1 | `sod-author-ne-approver` | SoD: author ≠ approver | [`sod-author-ne-approver.yaml`](sod-author-ne-approver.yaml) | [`prose/sod-author-ne-approver.md`](prose/sod-author-ne-approver.md) |
+| 2 | `sod-requester-ne-payer` | SoD: requester ≠ payer | [`sod-requester-ne-payer.yaml`](sod-requester-ne-payer.yaml) | [`prose/sod-requester-ne-payer.md`](prose/sod-requester-ne-payer.md) |
+| 3 | `spend-limit` | Spend limit | [`spend-limit.yaml`](spend-limit.yaml) | [`prose/spend-limit.md`](prose/spend-limit.md) |
+| 4 | `pii-egress` | PII egress | [`pii-egress.yaml`](pii-egress.yaml) | [`prose/pii-egress.md`](prose/pii-egress.md) |
+| 5 | `secrets` | Secrets | [`secrets.yaml`](secrets.yaml) | [`prose/secrets.md`](prose/secrets.md) |
+| 6 | `prod-write` | Prod write | [`prod-write.yaml`](prod-write.yaml) | [`prose/prod-write.md`](prose/prod-write.md) |
+| 7 | `retention` | Retention | [`retention.yaml`](retention.yaml) | [`prose/retention.md`](prose/retention.md) |
+| 8 | `cross-tenant` | Cross-tenant | [`cross-tenant.yaml`](cross-tenant.yaml) | [`prose/cross-tenant.md`](prose/cross-tenant.md) |
+| 9 | `irreversible-delete` | Irreversible delete | [`irreversible-delete.yaml`](irreversible-delete.yaml) | [`prose/irreversible-delete.md`](prose/irreversible-delete.md) |
+| 10 | `external-exfil` | External exfil | [`external-exfil.yaml`](external-exfil.yaml) | [`prose/external-exfil.md`](prose/external-exfil.md) |
 
-## Week-1 expectations
+Schema: [`SCHEMA.md`](SCHEMA.md).
 
-- Add one YAML (or JSON) file per card under this directory.  
-- Schema TBD in pilot kickoff (likely: id, version, roles, constraints, escalate_when, evidence_fields).  
-- Keep cards short enough to serve as **escalation features** for an SLM judge under iso-cost token caps.
+Cards are escalation features (Angle 1). Primary experiment contrast is YAML cards vs this prose, identical content. Not Magentic-UI, ToolGuard, OCL, Ctrl-Z, One-Human-N, or SCHEME.
 
-## Non-goals for this folder right now
-
-- Full enterprise policy packs  
-- Legal/compliance certification  
-- Deterministic ToolGuard codegen  
-
-See [`../BRIEF.md`](../BRIEF.md) and [`../IDEA.md`](../IDEA.md).
+Gold labels and Nebius trajectories are still human week-1 work. See [`../../../papers/minutes-and-mandates/pilot/README.md`](../../../papers/minutes-and-mandates/pilot/README.md).

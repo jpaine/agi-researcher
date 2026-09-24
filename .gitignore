@@ -74,6 +74,9 @@ papers/**/plots_repeated/
 *.pdf
 !docs/**/*.pdf
 
+# Pilot smoke logs (placeholders, not results)
+papers/**/pilot/logs/
+
 # Jupyter
 .ipynb_checkpoints/
 
