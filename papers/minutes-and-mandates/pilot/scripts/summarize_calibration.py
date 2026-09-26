@@ -216,6 +216,59 @@ def render_run_section(
     return "\n".join(parts)
 
 
+def render_key_table(meta: dict, labels: dict[str, str]) -> str:
+    """Compact cross-tabs for the runs listed in report_meta."""
+    lines = [
+        "## Key sanity checks (proposed labels only)",
+        "",
+        "Computed from the same committed JSONL as the run sections above. Not detection rates.",
+        "",
+        "| split | prompt | model | condition | violation | foil | clean |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
+    ]
+
+    def fmt(ct: dict, lab: str) -> str:
+        cell = ct.get(lab)
+        if not cell:
+            return "n/a"
+        n = cell["n"]
+        return (
+            f"allow {cell['allow']}, esc {cell['escalate'] + cell['block']}, "
+            f"parse_fail {cell['parse_fail']}, n {n}"
+        )
+
+    for row in meta.get("key_table_rows", []):
+        log_dir = Path(row["log_dir"])
+        _, cards, prose = load_run(log_dir)
+        for condition, rows in (("cards", cards), ("prose", prose)):
+            selected = rows
+            if row.get("inject_only"):
+                selected = [item for item in rows if str(item["step_id"]).startswith("inj-")]
+            # Rebuild sanity buckets limited to selected rows.
+            buckets: dict[str, dict[str, int]] = {}
+            for item in selected:
+                label = labels[item["step_id"]]
+                cell = buckets.setdefault(
+                    label,
+                    {"allow": 0, "escalate": 0, "block": 0, "parse_fail": 0, "n": 0},
+                )
+                cell["n"] += 1
+                if item["parse_ok"] is not True:
+                    cell["parse_fail"] += 1
+                elif item["decision"] in {"allow", "escalate", "block"}:
+                    cell[item["decision"]] += 1
+            lines.append(
+                f"| {row['split']} | {row['prompt']} | {row['model']} | {condition} | "
+                f"{fmt(buckets, 'violation')} | {fmt(buckets, 'foil')} | {fmt(buckets, 'clean')} |"
+            )
+    extra = meta.get("key_table_notes_markdown", "").rstrip()
+    if extra:
+        lines.extend(["", extra, ""])
+    else:
+        lines.append("")
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -256,6 +309,7 @@ def main() -> int:
         "## Runs",
         "",
         "\n".join(sections),
+        render_key_table(meta, labels),
         "## Not verified",
         "",
         meta["not_verified_markdown"].rstrip(),

@@ -310,5 +310,54 @@ class SubsetAndReportTests(unittest.TestCase):
         self.assertNotIn("clean-0000", sheet)
 
 
+    def test_committed_calibration_report_matches_logs(self) -> None:
+        report = PILOT / "CALIBRATION_REPORT.md"
+        meta = PILOT / "calibration" / "report_meta.json"
+        if not report.exists() or not meta.exists():
+            self.skipTest("calibration report is not committed yet")
+        import summarize_calibration
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "CALIBRATION_REPORT.md"
+            # Call the same renderer path as the CLI.
+            import json
+            payload = json.loads(meta.read_text(encoding="utf-8"))
+            label_paths = [Path(p) for p in payload["proposed_label_files"]]
+            labels = summarize_calibration.load_proposed_labels(*label_paths)
+            sections = []
+            for run in payload["runs"]:
+                log_dir = Path(run["log_dir"])
+                manifest, cards, prose = summarize_calibration.load_run(log_dir)
+                manifest = dict(manifest)
+                manifest["_log_dir"] = run["log_dir"]
+                sections.append(
+                    summarize_calibration.render_run_section(run["title"], manifest, cards, prose, labels)
+                )
+            rendered = "\n".join(
+                [
+                    "# Judge calibration — decision bar and holdout",
+                    "",
+                    "Every count in this file is computed from the committed JSONL logs and manifests "
+                    "listed below by `scripts/summarize_calibration.py`. Numbers are not invented.",
+                    "",
+                    "Proposed labels (`violation`, `foil`, `clean`) are synthesizer / clean-by-construction "
+                    "intention only. They are **not gold**. Cross-tabs are a sanity check, not detection rates.",
+                    "",
+                    "## Protocol",
+                    "",
+                    payload["protocol_markdown"].rstrip(),
+                    "",
+                    "## Runs",
+                    "",
+                    "\n".join(sections),
+                    summarize_calibration.render_key_table(payload, labels),
+                    "## Not verified",
+                    "",
+                    payload["not_verified_markdown"].rstrip(),
+                    "",
+                ]
+            )
+            self.assertEqual(report.read_text(encoding="utf-8"), rendered)
+
 if __name__ == "__main__":
     unittest.main()

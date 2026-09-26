@@ -1,0 +1,87 @@
+{
+  "kind": "minutes-and-mandates-judge-smoke",
+  "started_at_utc": "2026-09-26T18:37:30Z",
+  "paired_started_at_utc": "2026-09-26T18:37:36Z",
+  "finished_at_utc": "2026-09-26T18:47:52Z",
+  "code_git_sha": "7fad234856956778dad10209c848470df4329825",
+  "hosted_endpoint_calls": 0,
+  "cost_note": "Local llama.cpp only. No hosted endpoint was called.",
+  "steps_file": "papers/minutes-and-mandates/pilot/data/calibration/dev_subset_6.jsonl",
+  "subset_seed": null,
+  "permutation": "file order, then the first limit steps",
+  "python_random": "3.12.3 random.Random.shuffle",
+  "limit": 6,
+  "step_ids": [
+    "inj-0045",
+    "inj-0029",
+    "inj-0041",
+    "inj-0042",
+    "inj-0059",
+    "inj-0047"
+  ],
+  "conditions": [
+    "cards",
+    "prose"
+  ],
+  "prompt_version": "v4",
+  "probe": null,
+  "decode": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": 1,
+    "min_p": 0.0,
+    "typical_p": 1.0,
+    "repeat_penalty": 1.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "max_tokens": 384,
+    "seed": 20260926
+  },
+  "decode_note": "The decode seed is passed on every llama.cpp or HTTP call.",
+  "host": {
+    "cpu_model": "Intel(R) Xeon(R) Processor",
+    "vendor_id": "GenuineIntel",
+    "cpu_family": "6",
+    "cpu_model_number": "207",
+    "cpu_stepping": "2",
+    "cpu_mhz": "2400.000",
+    "avx512f": true,
+    "nproc": 4,
+    "n_threads": 4,
+    "mem_total_kib": 16398384,
+    "mem_available_kib": 7187136,
+    "mem_free_kib": 267096
+  },
+  "libraries": {
+    "python": "3.12.3",
+    "jsonschema": "4.26.0",
+    "pyyaml": "6.0.1",
+    "llama_cpp_python": "0.3.35",
+    "huggingface_hub": "2.0.0"
+  },
+  "model": {
+    "repo_id": "bartowski/Qwen2.5-7B-Instruct-GGUF",
+    "revision": "8911e8a47f92bac19d6f5c64a2e2095bd2f7d031",
+    "filename": "Qwen2.5-7B-Instruct-Q4_K_M.gguf",
+    "sha256": "65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423",
+    "size_bytes": 4683074240,
+    "quantization": "Q4_K_M",
+    "license": "Apache-2.0",
+    "license_url": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/LICENSE",
+    "base_model_repo": "Qwen/Qwen2.5-7B-Instruct",
+    "base_model_revision": null,
+    "parameter_count": null,
+    "huggingface_etag": "65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423",
+    "note": "Optional 7B pin for calibration. Default judge remains the 4B pin in model_pin.py."
+  },
+  "llama": {
+    "load_wall_time_ms": 2985,
+    "chat_format": "chat_template.default",
+    "chat_template_sha256": "524c587f9f46718126c2a7bbea148620f44c2722510fc8b2e898943d66a9d1fe",
+    "chat_template_mentions_think": false,
+    "system_info": "CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | AMX_INT8 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |",
+    "n_gpu_layers": 0,
+    "prompt_cache": false,
+    "context_reset_before_call": true
+  }
+}
