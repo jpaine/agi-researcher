@@ -36,7 +36,13 @@ from judge import (  # noqa: E402
     library_versions,
 )
 from model_pin import pin_record  # noqa: E402
-from prompts import build_messages, load_policy_artifact, prompt_sha256  # noqa: E402
+from prompts import (  # noqa: E402
+    DEFAULT_PROMPT_VERSION,
+    PROMPT_TEMPLATES,
+    build_messages,
+    load_policy_artifact,
+    prompt_sha256,
+)
 
 PILOT = Path(__file__).resolve().parents[1]
 REPO = PILOT.parents[2]
@@ -154,7 +160,17 @@ def rel_repo(path: Path) -> str:
         return str(path)
 
 
-def log_row(condition: str, index: int, step: dict, policy_chars: int, judge, evaluation: dict, messages: list[dict]) -> dict:
+def log_row(
+    condition: str,
+    index: int,
+    step: dict,
+    policy_chars: int,
+    judge,
+    evaluation: dict,
+    messages: list[dict],
+    *,
+    prompt_version: str,
+) -> dict:
     row = {
         "condition": condition,
         "trajectory_id": step["trajectory_id"],
@@ -176,6 +192,7 @@ def log_row(condition: str, index: int, step: dict, policy_chars: int, judge, ev
         "attempt_count": evaluation["attempt_count"],
         "attempts": evaluation["attempts"],
         "prompt_sha256": prompt_sha256(messages),
+        "prompt_version": prompt_version,
     }
     row.update(judge.describe())
     if any(str(key).startswith("proposed_") for key in row):
@@ -183,16 +200,32 @@ def log_row(condition: str, index: int, step: dict, policy_chars: int, judge, ev
     return row
 
 
-def run(condition: str, steps: list[dict], judge=None, sink: Path | None = None) -> list[dict]:
+def run(
+    condition: str,
+    steps: list[dict],
+    judge=None,
+    sink: Path | None = None,
+    *,
+    prompt_version: str = DEFAULT_PROMPT_VERSION,
+) -> list[dict]:
     judge = judge or MockJudge()
     policy = load_policy_artifact(condition)
     rows = []
     handle = sink.open("w", encoding="utf-8") if sink is not None else None
     try:
         for index, step in enumerate(steps):
-            messages = build_messages(condition, step)
+            messages = build_messages(condition, step, prompt_version=prompt_version)
             evaluation = evaluate(judge, messages)
-            row = log_row(condition, index, step, len(policy), judge, evaluation, messages)
+            row = log_row(
+                condition,
+                index,
+                step,
+                len(policy),
+                judge,
+                evaluation,
+                messages,
+                prompt_version=prompt_version,
+            )
             rows.append(row)
             if handle is not None:
                 handle.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -228,6 +261,12 @@ def main() -> int:
     )
     parser.add_argument("--subset-minimum", type=int, default=DEFAULT_SUBSET_MINIMUM)
     parser.add_argument("--judge", choices=("mock", "llama", "openai"), default="mock")
+    parser.add_argument(
+        "--prompt-version",
+        choices=sorted(PROMPT_TEMPLATES),
+        default=DEFAULT_PROMPT_VERSION,
+        help="Shared A/B instruction template version. Conditions still differ only by artifact phrase.",
+    )
     parser.add_argument("--n-ctx", type=int, default=8192)
     parser.add_argument("--n-threads", type=int, default=os.cpu_count() or 1)
     parser.add_argument("--n-batch", type=int, default=512)
@@ -281,7 +320,7 @@ def main() -> int:
     probe = None
     if judge.measures and args.limit is None:
         probe_step = ordered[0]
-        probe_messages = build_messages("cards", probe_step)
+        probe_messages = build_messages("cards", probe_step, prompt_version=args.prompt_version)
         probe_eval = evaluate(judge, probe_messages)
         if not isinstance(probe_eval["wall_time_ms"], int) or probe_eval["wall_time_ms"] <= 0:
             raise SystemExit("probe call did not record a positive wall time")
@@ -325,7 +364,7 @@ def main() -> int:
 
     for condition in conditions:
         out = args.log_dir / f"smoke_{condition}.jsonl"
-        rows = run(condition, judged, judge, sink=out)
+        rows = run(condition, judged, judge, sink=out, prompt_version=args.prompt_version)
         if not judge.measures:
             for row in rows:
                 if row["tokens_in"] is not None or row["tokens_out"] is not None or row["wall_time_ms"] is not None:
@@ -367,6 +406,7 @@ def main() -> int:
             "limit": limit_used,
             "step_ids": order,
             "conditions": conditions,
+            "prompt_version": args.prompt_version,
             "probe": probe,
             "decode": decode,
             "decode_note": "The decode seed is passed on every llama.cpp or HTTP call.",
