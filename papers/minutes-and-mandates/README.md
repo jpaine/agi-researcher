@@ -4,7 +4,7 @@
 | --- | --- |
 | **Slug** | `minutes-and-mandates` |
 | **Role** | Denario `project_dir` for idea/method **critique** (not a finished paper) |
-| **Status** | Method draft patched after critique; Gate A prep (cards, Nebius subset ingest, proposed inject candidates, mock smoke loop). No gold labels and no pilot metrics. |
+| **Status** | Method draft patched after critique; Gate A prep (cards, Nebius subset ingest, proposed inject candidates, mock smoke loop, optional local ≤8B judge). No gold labels and no detection-rate claims. |
 | **Brainstorm source** | [`../../brainstorm/minutes-and-mandates/`](../../brainstorm/minutes-and-mandates/) (`BRIEF.md`, `IDEA.md`, `GO_NO_GO.md`) |
 
 ## Hard rules

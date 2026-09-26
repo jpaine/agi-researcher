@@ -16,7 +16,6 @@ from pathlib import Path
 
 SCRIPTS = Path(__file__).resolve().parent
 PILOT = SCRIPTS.parent
-TESTS = PILOT / "tests" / "test_prep.py"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
@@ -27,8 +26,11 @@ from step_format import sha256_text  # noqa: E402
 
 
 def run_unit_tests() -> None:
-    sys.path.insert(0, str(TESTS.parent))
-    suite = unittest.defaultTestLoader.loadTestsFromName("test_prep")
+    suite = unittest.defaultTestLoader.discover(
+        str(PILOT / "tests"),
+        pattern="test_*.py",
+        top_level_dir=str(PILOT / "tests"),
+    )
     result = unittest.TextTestRunner(verbosity=1).run(suite)
     if not result.wasSuccessful():
         raise SystemExit("unit tests failed")
@@ -89,7 +91,6 @@ def run_smoke() -> None:
 
 
 def main() -> int:
-    sys.path.insert(0, str(TESTS.parent))
     run_unit_tests()
     check_committed_outputs()
     run_smoke()

@@ -9,7 +9,7 @@ Venue path: **AAAI-27** primary, **ICLR 2027 workshop** backup. MASO skipped (`b
 1. Cards: drafted under `brainstorm/minutes-and-mandates/cards/` (YAML + matched prose).
 2. Trajectories: `scripts/nebius.py` streams a seeded subset of the public Nebius SWE-agent set and converts it. The committed sample is `data/trajectories/nebius_sample.jsonl` (10 trajectories, 171 steps). Raw downloads stay in gitignored `data/raw/`.
 3. Injects: templates for all 10 cards, and 60 proposed candidates (`data/injects/candidates.jsonl`). Labels are still human work. See `labeling/LABELING.md`.
-4. Judge loop: `scripts/smoke_loop.py` dry-runs the mock judge on the 3-step fixture or on the candidate file. It does not call a real ≤8B model and does not fill token or time fields.
+4. Judge loop: `scripts/smoke_loop.py` dry-runs the mock judge unless `--judge llama` or `--judge openai` is set. CI uses the mock. The local backend is documented in `JUDGE.md`. Measured token and time fields are written only by a measuring backend.
 5. Meters: follow `meters.md` (`N_target`, human minutes, SLM tokens/time, Nebius fairness). Tables stay empty until a real run.
 6. Do not call Denario `get_paper`. Do not invent catch rates.
 
@@ -54,9 +54,23 @@ python3 papers/minutes-and-mandates/pilot/scripts/smoke_loop.py \
 python3 papers/minutes-and-mandates/pilot/scripts/check_prep.py
 ```
 
-`fetch` defaults: seed `20260926`, modulus `40`, scan limit `2500`, keep `10` trajectories with 5–70 parsed actions. The manifest records rows that matched the hash and were skipped for length. CI runs `check_prep.py` only (validate the committed sample, regenerate candidates and the blank sheet, mock-judge both).
+Local CPU judge (downloads the pinned GGUF into gitignored `data/model_cache/`; not used by CI):
 
-Default smoke is a dry-run mock (decision `allow`, token fields null). `OPENAI_API_KEY` is optional and unused. This stub does not call the network.
+```bash
+python3 -m pip install -r papers/minutes-and-mandates/pilot/requirements-judge.txt
+python3 papers/minutes-and-mandates/pilot/scripts/smoke_loop.py \
+  --judge llama \
+  --steps papers/minutes-and-mandates/pilot/data/injects/candidates.jsonl \
+  --subset-seed 20260926 \
+  --log-dir papers/minutes-and-mandates/pilot/smoke
+python3 papers/minutes-and-mandates/pilot/scripts/summarize_smoke.py \
+  --log-dir papers/minutes-and-mandates/pilot/smoke \
+  --out papers/minutes-and-mandates/pilot/SMOKE_REPORT.md
+```
+
+`fetch` defaults: seed `20260926`, modulus `40`, scan limit `2500`, keep `10` trajectories with 5–70 parsed actions. The manifest records rows that matched the hash and were skipped for length. CI runs `check_prep.py` only (validate the committed sample, regenerate candidates and the blank sheet, mock-judge both). CI does not install `requirements-judge.txt`.
+
+Default smoke is a dry-run mock (decision `allow`, token fields null). It does not call the network. `--judge llama` and `--judge openai` are the measuring paths. See `JUDGE.md`. OpenAI-compatible calls use `JUDGE_BASE_URL` and `JUDGE_MODEL`, not `OPENAI_API_KEY`.
 
 ## Layout
 
@@ -74,6 +88,11 @@ Default smoke is a dry-run mock (decision `allow`, token fields null). `OPENAI_A
 | `scripts/nebius.py` | `fetch`, `convert`, `validate` |
 | `scripts/generate_injects.py` | Seeded proposed candidates |
 | `scripts/labeling.py` | `export` sheet, `agree` passes |
-| `scripts/smoke_loop.py` | Same step order for cards vs prose |
-| `scripts/check_prep.py` | Local/CI check |
+| `scripts/smoke_loop.py` | Same step order for cards vs prose. Mock by default |
+| `scripts/judge.py` | Mock, llama.cpp, and OpenAI-compatible backends |
+| `scripts/prompts.py` | Condition A/B prompts |
+| `scripts/model_pin.py` | Pinned GGUF repo, revision, sha256 |
+| `scripts/summarize_smoke.py` | Renders `SMOKE_REPORT.md` from a measured log |
+| `JUDGE.md` | Backend, model pin, license, why not 7B/8B on this VM |
+| `scripts/check_prep.py` | Local/CI check (mock judge only) |
 | `meters.md` | Iso-cost accounting |
