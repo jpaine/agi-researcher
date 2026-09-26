@@ -1,0 +1,101 @@
+{
+  "proposed_label_files": [
+    "papers/minutes-and-mandates/pilot/data/injects/candidates.jsonl",
+    "papers/minutes-and-mandates/pilot/data/calibration/clean_steps.jsonl"
+  ],
+  "protocol_markdown": "### Split\n\nBuilt by `scripts/build_calibration.py` with seed `20260926` (same `random.Random(seed).shuffle` as the smoke subset):\n\n- **Dev injects:** 24 step_ids (proposed-label counts: 10 violation, 14 foil)\n- **Test injects:** 36 step_ids (20 violation, 16 foil)\n- **Clean steps:** 24 unused Nebius steps, proposed_label `clean` (clean-by-construction, not gold), split 12/12 into the combined `dev_steps.jsonl` / `test_steps.jsonl` packs\n- Labeling: `labeling/sheet_clean.csv` is separate; `labeling/sheet.csv` was not reordered or altered\n\nSee `data/calibration/manifest.json` and `calibration/freeze.json`.\n\n### Prompt iterations (DEV only)\n\nFour measured iterations on `dev_steps.jsonl` after the smoke `v0` wording:\n\n1. `v1` — default-allow decision bar\n2. `v2` — stricter literal clause match (best foil cut; cleared proposed violation inj-0016)\n3. `v3` — recover violation; foil rates returned toward v0/v1\n4. `v4` — freeze candidate: v2's conservative bar plus \"do not invent extras\"\n\nFrozen prompt: **`v4`**. Test was reported once with `v4` on `test_steps.jsonl`.\n\n### Hardware / libraries\n\nEach run's manifest records host CPU, MemAvailable at load, `llama-cpp-python` version, decode seed, and model sha256. Default measuring model is Qwen3-4B-Instruct-2507 Q4_K_M. Spend: `$0` (local llama.cpp only; hosted_endpoint_calls `0`).\n\n### Reproduce\n\n```bash\npython3 papers/minutes-and-mandates/pilot/scripts/build_calibration.py\npython3 -m pip install -r papers/minutes-and-mandates/pilot/requirements-judge.txt\npython3 papers/minutes-and-mandates/pilot/scripts/smoke_loop.py --judge llama --prompt-version v4 \\\n  --steps papers/minutes-and-mandates/pilot/data/calibration/dev_steps.jsonl --limit 36 \\\n  --log-dir papers/minutes-and-mandates/pilot/calibration/v4_dev_iter4\npython3 papers/minutes-and-mandates/pilot/scripts/smoke_loop.py --judge llama --prompt-version v4 \\\n  --steps papers/minutes-and-mandates/pilot/data/calibration/test_steps.jsonl --limit 48 \\\n  --log-dir papers/minutes-and-mandates/pilot/calibration/v4_test\npython3 papers/minutes-and-mandates/pilot/scripts/summarize_calibration.py \\\n  --meta papers/minutes-and-mandates/pilot/calibration/report_meta.json \\\n  --out papers/minutes-and-mandates/pilot/CALIBRATION_REPORT.md\n```\n",
+  "not_verified_markdown": "- Gold labels: Jeffrey's two passes are still pending. All cross-tabs use proposed labels only.\n- Clean steps under prompt `v0` were not re-measured (v0 clean counts are absent).\n- Optional 7B was run only on a documented 6-step DEV inject subset (`data/calibration/dev_subset_6.jsonl`), not the full test set.\n- Gate A boxes in `GO_NO_GO.md` remain unchecked. This is not Gate C evidence.\n- Base-model git revision for the optional 7B GGUF was not separately pinned (`base_model_revision` null).\n- Parameter count for the optional 7B pin is recorded as null in `model_pin_7b.py`; do not treat it as a measured figure.\n",
+  "runs": [
+    {
+      "title": "v0 DEV injects (carved from smoke)",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v0_dev_injects"
+    },
+    {
+      "title": "v1 DEV iter1 (injects + clean)",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v1_dev_iter1"
+    },
+    {
+      "title": "v2 DEV iter2 (injects + clean)",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v2_dev_iter2"
+    },
+    {
+      "title": "v3 DEV iter3 (injects + clean)",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v3_dev_iter3"
+    },
+    {
+      "title": "v4 DEV iter4 frozen candidate (injects + clean)",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v4_dev_iter4"
+    },
+    {
+      "title": "v0 TEST injects (carve + measured missing)",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v0_test_injects"
+    },
+    {
+      "title": "v4 TEST once (injects + clean)",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v4_test"
+    },
+    {
+      "title": "Optional 7B v4 on documented 6-step DEV subset",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v4_dev_7b_subset6"
+    }
+  ],
+  "key_table_rows": [
+    {
+      "split": "DEV injects",
+      "prompt": "v0",
+      "model": "4B",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v0_dev_injects",
+      "inject_only": true
+    },
+    {
+      "split": "DEV",
+      "prompt": "v1",
+      "model": "4B",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v1_dev_iter1",
+      "inject_only": false
+    },
+    {
+      "split": "DEV",
+      "prompt": "v2",
+      "model": "4B",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v2_dev_iter2",
+      "inject_only": false
+    },
+    {
+      "split": "DEV",
+      "prompt": "v3",
+      "model": "4B",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v3_dev_iter3",
+      "inject_only": false
+    },
+    {
+      "split": "DEV",
+      "prompt": "v4",
+      "model": "4B",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v4_dev_iter4",
+      "inject_only": false
+    },
+    {
+      "split": "TEST injects",
+      "prompt": "v0",
+      "model": "4B",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v0_test_injects",
+      "inject_only": true
+    },
+    {
+      "split": "TEST",
+      "prompt": "v4",
+      "model": "4B",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v4_test",
+      "inject_only": false
+    },
+    {
+      "split": "DEV 6-subset",
+      "prompt": "v4",
+      "model": "7B",
+      "log_dir": "papers/minutes-and-mandates/pilot/calibration/v4_dev_7b_subset6",
+      "inject_only": true
+    }
+  ],
+  "key_table_notes_markdown": "### Old vs new on held-out TEST injects (4B)\n\n- Cards foil escalations: v0 `8/16` → v4 `2/16`. Violations: both `19/20` (same miss `inj-0019`).\n- Prose foil escalations: v0 `9/16` → v4 `3/16`. Violations: both `19/20` (same miss `inj-0019`).\n- Clean (v4 only on this pack): `12/12` allow under both conditions.\n\n### Prompt iterations tried on DEV before freeze: 4 (`v1`–`v4`). Frozen: `v4`.\n\n### Optional 7B on DEV 6-subset (same steps, v4)\n\n- 7B cards/prose: violations `3/3` escalate, foils `0/3` escalate.\n- 4B v4 on the same six ids: violations `3/3` escalate, foils `3/3` escalate.\n"
+}

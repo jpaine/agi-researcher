@@ -20,8 +20,29 @@ from pathlib import Path
 
 import jsonschema
 
-from model_pin import ensure_gguf, pin_record
 from prompts import PILOT
+
+# Optional larger pin selected with JUDGE_MODEL_PIN=qwen25-7b.
+import model_pin as _model_pin_4b
+import model_pin_7b as _model_pin_7b
+
+
+def _active_pin_module():
+    choice = os.environ.get("JUDGE_MODEL_PIN", "qwen3-4b").strip().lower()
+    if choice in {"", "qwen3-4b", "4b", "default"}:
+        return _model_pin_4b
+    if choice in {"qwen25-7b", "7b"}:
+        return _model_pin_7b
+    raise SystemExit(f"unknown JUDGE_MODEL_PIN {choice}")
+
+
+def ensure_gguf():
+    return _active_pin_module().ensure_gguf()
+
+
+def pin_record():
+    return _active_pin_module().pin_record()
+
 
 SCHEMA_PATH = PILOT / "schema" / "judge_output.schema.json"
 

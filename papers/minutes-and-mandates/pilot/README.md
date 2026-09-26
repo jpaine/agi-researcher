@@ -72,6 +72,20 @@ python3 papers/minutes-and-mandates/pilot/scripts/summarize_smoke.py \
 
 Default smoke is a dry-run mock (decision `allow`, token fields null). It does not call the network. `--judge llama` and `--judge openai` are the measuring paths. See `JUDGE.md`. OpenAI-compatible calls use `JUDGE_BASE_URL` and `JUDGE_MODEL`, not `OPENAI_API_KEY`.
 
+Calibration (holdout + decision-bar prompt):
+
+```bash
+python3 papers/minutes-and-mandates/pilot/scripts/build_calibration.py
+python3 papers/minutes-and-mandates/pilot/scripts/smoke_loop.py \
+  --judge llama \
+  --prompt-version v1 \
+  --steps papers/minutes-and-mandates/pilot/data/calibration/dev_steps.jsonl \
+  --limit 36 \
+  --log-dir papers/minutes-and-mandates/pilot/calibration/v1_dev_iter1
+```
+
+Do not tune on `test_steps.jsonl`. Report figures only from committed logs via `scripts/summarize_calibration.py`.
+
 ## Layout
 
 | Path | Role |
