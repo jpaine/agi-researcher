@@ -23,7 +23,9 @@ Track gates in order. Check boxes only when evidence exists in-repo or in linked
 **Week-1 pilot OK** when A1–A7 are checked.  
 **Until then: no Denario runs.**
 
-**Prep note (not evidence; does not check A1–A7).** A follow-on change adds a seeded ingest of a small `nebius/SWE-agent-trajectories` subset (dataset id, revision, license, and counts are in `papers/minutes-and-mandates/pilot/data/trajectories/manifest.json`), one inject template per card, a generator of proposed violation/foil candidates, and a two-pass labeling sheet that hides those proposals. The smoke loop can read the candidate file and still uses the dry-run mock. Proposed labels are not gold. No real ≤8B judge is wired up, and no token or time numbers are filled in.
+**Prep note (not evidence; does not check A1–A7).** A follow-on change adds a seeded ingest of a small `nebius/SWE-agent-trajectories` subset (dataset id, revision, license, and counts are in `papers/minutes-and-mandates/pilot/data/trajectories/manifest.json`), one inject template per card, a generator of proposed violation/foil candidates, and a two-pass labeling sheet that hides those proposals. The smoke loop can read the candidate file. Its default path is still the dry-run mock, which is what CI runs. Proposed labels are not gold.
+
+**Judge wiring (does not check A1–A7).** The loop can also call a local open-weights model of at most 8B parameters through llama.cpp on CPU, or an OpenAI-compatible endpoint. Weights are not committed. CI does not download them. Gold labels are still missing: Jeffrey's two labeling passes are pending. A measured smoke, if committed, is a log of calls, not a detection rate. A1–A7 stay unchecked.
 
 ---
 

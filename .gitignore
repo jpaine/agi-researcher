@@ -74,11 +74,16 @@ papers/**/plots_repeated/
 *.pdf
 !docs/**/*.pdf
 
-# Pilot smoke logs (placeholders, not results)
+# Pilot smoke logs (placeholders, not results). Measured smoke JSONL
+# lives under papers/**/pilot/smoke/ and is committed on purpose.
 papers/**/pilot/logs/
 
 # Raw trajectory downloads. Commit converted samples only.
 papers/**/pilot/data/raw/
+
+# Judge weights. Pinned GGUF files download into this cache.
+papers/**/pilot/data/model_cache/
+**/*.gguf
 
 # Jupyter
 .ipynb_checkpoints/

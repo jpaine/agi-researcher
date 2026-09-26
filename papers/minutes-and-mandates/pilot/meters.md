@@ -33,4 +33,6 @@ Exploratory foil only. Human minutes may be matched for an appendix. D is not in
 
 ## Placeholder log fields (smoke)
 
-`tokens_in`, `tokens_out`, `wall_time_ms` may be `null` in dry-run. Null is not a measurement.
+`tokens_in`, `tokens_out`, `wall_time_ms` may be `null` in the dry-run mock. Null is not a measurement.
+
+A measuring judge fills those three fields from the backend usage object and a wall-clock timer around that call, including one schema-failure retry. The iso-cost tables above stay empty until a full A/B/C budget run on a frozen test split. A CPU smoke log is not that run. Do not copy smoke timings into the tables in this file.
