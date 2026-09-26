@@ -19,4 +19,4 @@ Schema: [`SCHEMA.md`](SCHEMA.md).
 
 Cards are escalation features (Angle 1). Primary experiment contrast is YAML cards vs this prose, identical content. Not Magentic-UI, ToolGuard, OCL, Ctrl-Z, One-Human-N, or SCHEME.
 
-Gold labels and Nebius trajectories are still human week-1 work. See [`../../../papers/minutes-and-mandates/pilot/README.md`](../../../papers/minutes-and-mandates/pilot/README.md).
+Gold labels are still human work. A seeded Nebius subset and proposed inject candidates live under the pilot folder; they are not gold. See [`../../../papers/minutes-and-mandates/pilot/README.md`](../../../papers/minutes-and-mandates/pilot/README.md).

@@ -77,6 +77,9 @@ papers/**/plots_repeated/
 # Pilot smoke logs (placeholders, not results)
 papers/**/pilot/logs/
 
+# Raw trajectory downloads. Commit converted samples only.
+papers/**/pilot/data/raw/
+
 # Jupyter
 .ipynb_checkpoints/
 

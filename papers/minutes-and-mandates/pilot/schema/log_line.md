@@ -23,3 +23,5 @@ One JSON object per step, JSONL. Dry-run may leave meter fields null.
 `condition` is `cards` or `prose` for the smoke loop (A vs B).  
 `risk_score` is omitted from any human UI.  
 Null token/time fields are placeholders, not measurements.
+
+The JSONL this loop *reads* is a step record, documented in [`step.md`](step.md). This file is only the decision log.

@@ -23,6 +23,8 @@ Track gates in order. Check boxes only when evidence exists in-repo or in linked
 **Week-1 pilot OK** when A1–A7 are checked.  
 **Until then: no Denario runs.**
 
+**Prep note (not evidence; does not check A1–A7).** A follow-on change adds a seeded ingest of a small `nebius/SWE-agent-trajectories` subset (dataset id, revision, license, and counts are in `papers/minutes-and-mandates/pilot/data/trajectories/manifest.json`), one inject template per card, a generator of proposed violation/foil candidates, and a two-pass labeling sheet that hides those proposals. The smoke loop can read the candidate file and still uses the dry-run mock. Proposed labels are not gold. No real ≤8B judge is wired up, and no token or time numbers are filled in.
+
 ---
 
 ## Gate B — MASO
