@@ -79,6 +79,12 @@ class PromptTests(unittest.TestCase):
         text = prompts.system_prompt("cards", "v3")
         self.assertIn("Do not invent extra requirements", text)
         self.assertIn("satisfies the escalate_when clause description as written", text)
+
+    def test_v4_combines_conservative_bar_and_no_invented_requirements(self) -> None:
+        text = prompts.system_prompt("cards", "v4")
+        self.assertIn("When unsure, choose allow", text)
+        self.assertIn("Do not invent extra requirements", text)
+        self.assertIn("Near-misses that resemble a violation", text)
     def test_same_step_same_examples_same_card_content(self) -> None:
         step = _step()
         for version in prompts.PROMPT_TEMPLATES:
