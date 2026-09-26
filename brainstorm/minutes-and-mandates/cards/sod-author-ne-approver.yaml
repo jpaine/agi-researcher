@@ -1,0 +1,24 @@
+id: sod-author-ne-approver
+version: v0.1
+title: "SoD: author ≠ approver"
+roles:
+  - change_author
+  - approver
+constraints:
+  - "The principal who authors a change must not be the principal who approves that same change."
+severity: high
+escalate_when:
+  - id: same-principal-approve
+    description: "Escalate when the same actor id both authors a change and approves or merges it."
+  - id: self-approve-pr
+    description: "Escalate when a pull request or commit sign-off is approved by the account that opened it and no distinct approver is recorded."
+evidence_fields:
+  - author_id
+  - approver_id
+  - action
+  - resource_id
+examples:
+  positive: "alice opens PR 12 and alice approves and merges it."
+  negative: "alice opens PR 12 and bob approves it."
+notes:
+  - "Escalation feature for an SLM judge. Not a ToolGuard codegen spec and not a full enterprise policy pack."

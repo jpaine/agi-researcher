@@ -1,0 +1,3 @@
+[submodule "vendor/denario"]
+	path = vendor/denario
+	url = https://github.com/AstroPilot-AI/Denario.git

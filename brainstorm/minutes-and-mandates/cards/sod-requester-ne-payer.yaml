@@ -1,0 +1,24 @@
+id: sod-requester-ne-payer
+version: v0.1
+title: "SoD: requester ≠ payer"
+roles:
+  - requester
+  - payer
+constraints:
+  - "The principal who requests a payment or reimbursement must not be the principal who releases or approves that payment."
+severity: high
+escalate_when:
+  - id: requester-releases-payment
+    description: "Escalate when the same actor id requests a payment and also approves or sends that payment."
+  - id: self-reimburse
+    description: "Escalate when an expense or invoice is marked paid by the account that submitted the request."
+evidence_fields:
+  - requester_id
+  - payer_id
+  - amount
+  - payment_id
+examples:
+  positive: "sam submits invoice 9 and sam marks invoice 9 as paid."
+  negative: "sam submits invoice 9 and riley marks invoice 9 as paid."
+notes:
+  - "Escalation feature for an SLM judge. Not a ToolGuard codegen spec and not a full enterprise policy pack."
