@@ -32,10 +32,11 @@ from judge import (  # noqa: E402
     MockJudge,
     OpenAICompatibleJudge,
     build_llama_judge,
+    ensure_gguf,
     evaluate,
     library_versions,
+    pin_record,
 )
-from model_pin import pin_record  # noqa: E402
 from prompts import (  # noqa: E402
     DEFAULT_PROMPT_VERSION,
     PROMPT_TEMPLATES,
@@ -281,8 +282,6 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.download_model:
-        from model_pin import ensure_gguf
-
         path = ensure_gguf()
         print(f"verified {path}")
         return 0

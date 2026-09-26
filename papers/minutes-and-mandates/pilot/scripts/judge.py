@@ -20,7 +20,6 @@ from pathlib import Path
 
 import jsonschema
 
-from model_pin import ensure_gguf, pin_record
 from prompts import PILOT
 
 # Optional larger pin selected with JUDGE_MODEL_PIN=qwen25-7b.
@@ -43,6 +42,7 @@ def ensure_gguf():
 
 def pin_record():
     return _active_pin_module().pin_record()
+
 
 SCHEMA_PATH = PILOT / "schema" / "judge_output.schema.json"
 
