@@ -25,7 +25,7 @@ Track gates in order. Check boxes only when evidence exists in-repo or in linked
 
 **Prep note (not evidence; does not check A1–A7).** A follow-on change adds a seeded ingest of a small `nebius/SWE-agent-trajectories` subset (dataset id, revision, license, and counts are in `papers/minutes-and-mandates/pilot/data/trajectories/manifest.json`), one inject template per card, a generator of proposed violation/foil candidates, and a two-pass labeling sheet that hides those proposals. The smoke loop can read the candidate file. Its default path is still the dry-run mock, which is what CI runs. Proposed labels are not gold.
 
-**Judge wiring (does not check A1–A7).** The loop can also call a local open-weights model of at most 8B parameters through llama.cpp on CPU, or an OpenAI-compatible endpoint. Weights are not committed. CI does not download them. Gold labels are still missing: Jeffrey's two labeling passes are pending. A measured smoke, if committed, is a log of calls, not a detection rate. A1–A7 stay unchecked.
+**Judge wiring (does not check A1–A7).** The loop can also call a local open-weights model of at most 8B parameters through llama.cpp on CPU, or an OpenAI-compatible endpoint. Weights are not committed. CI does not download them. A measured A vs B smoke on one seeded subset of the proposed candidates is in `papers/minutes-and-mandates/pilot/smoke/` and summarized in `papers/minutes-and-mandates/pilot/SMOKE_REPORT.md`. Those figures are call counts, parse failures, tokens, and wall time. They are not detection rates. Any cross-tab against proposed labels is a sanity check only. Gold labels are still missing: Jeffrey's two labeling passes are pending. A1–A7 stay unchecked.
 
 ---
 

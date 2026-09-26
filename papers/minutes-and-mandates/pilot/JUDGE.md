@@ -14,7 +14,7 @@ Condition A and condition B use the same instruction text except the artifact ph
 
 ## Pinned local model
 
-7B and 8B Q4_K_M files do not fit this smoke machine. Measured file sizes are the Hugging Face `x-linked-size` values at the revisions below. While the model was being chosen, `/proc/meminfo` on this VM reported `MemTotal` 16398384 kB and `MemAvailable` 5118292 kB (4 threads). The smoke manifest records a fresh `mem_available_kib` at run start. A smaller instruct model is the local default.
+7B and 8B Q4_K_M files were not used. Measured file sizes are the Hugging Face `x-linked-size` values at the revisions below. While the model was being chosen, `/proc/meminfo` on this VM reported `MemTotal` 16398384 kB and `MemAvailable` 5118292 kB (4 threads). That available figure is smaller than the 8B Q4 file. The smoke manifest records a separate `mem_available_kib` immediately before model load on the run that was kept. This run did not load a 7B or 8B file. A smaller instruct model is the local default.
 
 | | |
 | --- | --- |

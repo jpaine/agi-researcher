@@ -46,6 +46,12 @@ def condition_facts(rows: list[dict]) -> dict:
     tokens_in = [_require_int(row, "tokens_in") for row in rows]
     tokens_out = [_require_int(row, "tokens_out") for row in rows]
     wall = [_require_int(row, "wall_time_ms") for row in rows]
+    think_attempts = 0
+    for row in rows:
+        for attempt in row["attempts"]:
+            raw = attempt["raw_output"].lower()
+            if "<think" in raw or "</think>" in raw:
+                think_attempts += 1
     final_fail = sum(1 for row in rows if row["parse_ok"] is not True)
     first_fail = 0
     for row in rows:
@@ -73,6 +79,7 @@ def condition_facts(rows: list[dict]) -> dict:
         "wall_time_ms_max": max(wall),
         "decisions": decisions,
         "escalations": decisions["escalate"] + decisions["block"],
+        "think_tag_attempts": think_attempts,
     }
 
 
@@ -144,9 +151,10 @@ def _sanity_md(table: list[dict]) -> str:
 
 
 def _kv_table(pairs: list[tuple[str, object]]) -> str:
-    lines = ["| field | value |", "| --- | --- |"]
+    lines = []
     for key, value in pairs:
-        lines.append(f"| {key} | {value} |")
+        text = str(value).replace("\n", " ")
+        lines.append(f"- {key}: `{text}`")
     return "\n".join(lines)
 
 
@@ -204,6 +212,7 @@ def render_report(
                 f"- decisions among schema-valid calls: allow {facts['decisions']['allow']}, "
                 f"escalate {facts['decisions']['escalate']}, block {facts['decisions']['block']}",
                 f"- escalations (escalate + block, schema-valid only): {facts['escalations']}",
+                f"- attempts whose raw_output contains a think tag: {facts['think_tag_attempts']}",
                 f"- tokens_in sum {facts['tokens_in_sum']}, min {facts['tokens_in_min']}, max {facts['tokens_in_max']}",
                 f"- tokens_out sum {facts['tokens_out_sum']}, min {facts['tokens_out_min']}, max {facts['tokens_out_max']}",
                 f"- wall_time_ms sum {facts['wall_time_ms_sum']}, min {facts['wall_time_ms_min']}, max {facts['wall_time_ms_max']}",
