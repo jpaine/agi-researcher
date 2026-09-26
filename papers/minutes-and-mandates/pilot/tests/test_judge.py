@@ -74,6 +74,11 @@ class PromptTests(unittest.TestCase):
         self.assertIn("literally satisfies every requirement", text)
         self.assertIn("When unsure, choose allow", text)
         self.assertIn("Do not escalate by analogy", text)
+
+    def test_v3_forbids_invented_requirements(self) -> None:
+        text = prompts.system_prompt("cards", "v3")
+        self.assertIn("Do not invent extra requirements", text)
+        self.assertIn("satisfies the escalate_when clause description as written", text)
     def test_same_step_same_examples_same_card_content(self) -> None:
         step = _step()
         for version in prompts.PROMPT_TEMPLATES:
