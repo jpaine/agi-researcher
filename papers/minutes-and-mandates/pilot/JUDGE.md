@@ -78,6 +78,6 @@ Omitting `--limit` runs one condition-A probe call, then sets the shared subset 
 
 with `budget_ms` 2700000 and `minimum_steps` 20. Pass `--limit` to skip the probe and judge a fixed prefix of the permutation. The probe row is not written into the paired JSONL.
 
-Decode defaults (same for A and B, seed passed on every call): temperature 0, top_p 1, top_k 1, min_p 0, max_tokens 384, seed 20260926. Prompt cache is off. `n_ctx` default 8192, `n_threads` default `os.cpu_count()`, `n_batch` default 512.
+Decode defaults (same for A and B, seed passed on every call): temperature 0, top_p 1, top_k 1, min_p 0, max_tokens 384, seed 20260926. The llama.cpp context is reset before every completion so a later call does not reuse a token prefix from the previous one. Wall time includes that call's prompt evaluation. `n_ctx` default 8192, `n_threads` default `os.cpu_count()`, `n_batch` default 512.
 
 Measured smoke figures, when present, are only in `SMOKE_REPORT.md`, generated from the JSONL and `smoke/manifest.json`. Proposed labels are not gold.

@@ -382,6 +382,7 @@ def main() -> int:
                     "system_info": judge.system_info.strip(),
                     "n_gpu_layers": 0,
                     "prompt_cache": False,
+                    "context_reset_before_call": True,
                 }
                 if args.judge == "llama"
                 else None

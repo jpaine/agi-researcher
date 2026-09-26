@@ -391,6 +391,9 @@ class LlamaCppJudge:
         self.system_info = llama_cpp.llama_cpp.llama_print_system_info().decode("utf-8", errors="replace")
 
     def complete(self, messages: list[dict]) -> Completion:
+        # n_tokens must be 0 before generate(), or llama.cpp reuses a token
+        # prefix from the previous call and the wall time is not a full eval.
+        self.llm.reset()
         t0 = time.perf_counter()
         response = self.llm.create_chat_completion(
             messages=messages,
