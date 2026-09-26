@@ -27,6 +27,8 @@ Track gates in order. Check boxes only when evidence exists in-repo or in linked
 
 **Judge wiring (does not check A1–A7).** The loop can also call a local open-weights model of at most 8B parameters through llama.cpp on CPU, or an OpenAI-compatible endpoint. Weights are not committed. CI does not download them. A measured A vs B smoke on one seeded subset of the proposed candidates is in `papers/minutes-and-mandates/pilot/smoke/` and summarized in `papers/minutes-and-mandates/pilot/SMOKE_REPORT.md`. Those figures are call counts, parse failures, tokens, and wall time. They are not detection rates. Any cross-tab against proposed labels is a sanity check only. Gold labels are still missing: Jeffrey's two labeling passes are pending. A1–A7 stay unchecked.
 
+**Calibration (does not check A1–A7 or Gate C).** A follow-on change adds a seeded 24/36 inject holdout, clean-by-construction Nebius steps with a separate labeling sheet, a versioned decision-bar judge prompt, and measured calibration logs under `papers/minutes-and-mandates/pilot/calibration/` (see `CALIBRATION_REPORT.md` when present). Prompt iteration is restricted to the documented dev split. This is prep for Gate C, not Gate C evidence, and it does not check A1–A7.
+
 ---
 
 ## Gate B — MASO

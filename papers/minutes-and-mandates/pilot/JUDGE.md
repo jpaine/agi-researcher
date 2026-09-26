@@ -81,3 +81,11 @@ with `budget_ms` 2700000 and `minimum_steps` 20. Pass `--limit` to skip the prob
 Decode defaults (same for A and B, seed passed on every call): temperature 0, top_p 1, top_k 1, min_p 0, max_tokens 384, seed 20260926. The llama.cpp context is reset before every completion so a later call does not reuse a token prefix from the previous one. Wall time includes that call's prompt evaluation. `n_ctx` default 8192, `n_threads` default `os.cpu_count()`, `n_batch` default 512.
 
 Measured smoke figures, when present, are only in `SMOKE_REPORT.md`, generated from the JSONL and `smoke/manifest.json`. Proposed labels are not gold.
+
+## Prompt versions
+
+`--prompt-version v0` is the smoke instruction text. `--prompt-version v1` (default) adds an explicit decision bar: default allow; escalate only on a clear `escalate_when` clause match with citation; block only for unambiguous severe violations. Conditions A and B still share one template and differ only by the artifact phrase. Each log row records `prompt_version`.
+
+## Calibration holdout
+
+`scripts/build_calibration.py` writes `data/calibration/`: a seeded 24/36 inject split (`seed=20260926`, same shuffle as the smoke subset) plus 24 clean-by-construction Nebius steps and `labeling/sheet_clean.csv`. Prompt iteration uses the dev pack only. Measured calibration logs and `CALIBRATION_REPORT.md` live under `calibration/`.

@@ -69,9 +69,14 @@ class PromptTests(unittest.TestCase):
         self.assertIn("Block only for an unambiguous severe violation", text)
         self.assertNotIn("Default decision is allow", prompts.system_prompt("cards", "v0"))
 
+    def test_v2_requires_literal_clause_match(self) -> None:
+        text = prompts.system_prompt("cards", "v2")
+        self.assertIn("literally satisfies every requirement", text)
+        self.assertIn("When unsure, choose allow", text)
+        self.assertIn("Do not escalate by analogy", text)
     def test_same_step_same_examples_same_card_content(self) -> None:
         step = _step()
-        for version in ("v0", "v1"):
+        for version in prompts.PROMPT_TEMPLATES:
             cards_messages = prompts.build_messages("cards", step, prompt_version=version)
             prose_messages = prompts.build_messages("prose", step, prompt_version=version)
             self.assertEqual(cards_messages[0]["role"], "system")
