@@ -1,0 +1,214 @@
+{
+  "actor_field": "swe-agent means the SWE-agent process in the trace. The source rows do not name a human principal.",
+  "card_train_examples": 80036,
+  "counts": {
+    "redactions": 1,
+    "steps": 171,
+    "trajectories": 10
+  },
+  "dataset_id": "nebius/SWE-agent-trajectories",
+  "datasets_version": "5.0.1",
+  "gold": false,
+  "license": "cc-by-4.0",
+  "license_notes": [
+    "The license field is the dataset card value at this revision (cc-by-4.0 when this sample was fetched).",
+    "The dataset card says to respect each underlying repository's license. Those licenses are listed on nebius/SWE-bench-extra and are not columns on this trajectory set, so they are not joined here.",
+    "The dataset card says: if you intend to use the outputs of these models, you must comply with the Llama 3.1 license."
+  ],
+  "omitted_from_raw_subset": [
+    "generated_patch body (character count kept per trajectory)",
+    "eval_logs body (character count kept per trajectory)"
+  ],
+  "revision": "68195a1450865274106246d0d0296a1d6807b88e",
+  "seed": 20260926,
+  "selection": {
+    "algorithm": "sha256_mod",
+    "datasets_version": "5.0.1",
+    "hash_hits": 13,
+    "hash_input": "{dataset_id}|{revision}|{seed}|{row_index}",
+    "keep_when": "int.from_bytes(sha256(hash_input).digest()[:8], 'big') % modulus == 0",
+    "limit": 10,
+    "max_actions": 70,
+    "min_actions": 5,
+    "modulus": 40,
+    "order": "streaming train order at the pinned revision; row_index is the enumeration index",
+    "scan_limit": 2500,
+    "scanned_rows": 771,
+    "seed": 20260926,
+    "skipped": [
+      {
+        "instance_id": "asottile__pyupgrade-545",
+        "model_name": "swe-agent-llama-70b",
+        "n_steps": 128,
+        "reason": "action_count_outside_bounds",
+        "row_index": 272
+      },
+      {
+        "instance_id": "iterative__dvc-3462",
+        "model_name": "swe-agent-llama-70b",
+        "n_steps": 114,
+        "reason": "action_count_outside_bounds",
+        "row_index": 519
+      },
+      {
+        "instance_id": "just-work__fffw-100",
+        "model_name": "swe-agent-llama-8b",
+        "n_steps": 73,
+        "reason": "action_count_outside_bounds",
+        "row_index": 628
+      }
+    ],
+    "split": "train",
+    "streaming": true
+  },
+  "steps_sha256": "02905acb539188642a352f14e13c5e633552e41ce90f03c3eca2151ac6eade99",
+  "timestamp_field": "null because trajectory messages have no per-step timestamp. cutoff_date, when present, is copied into metadata and is not a step time.",
+  "trajectories": [
+    {
+      "eval_logs_chars": 2022,
+      "exit_status": "submitted",
+      "generated_patch_chars": 1721,
+      "instance_id": "AnalogJ__lexicon-336",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 23,
+      "n_steps": 11,
+      "redactions": 0,
+      "row_index": 8,
+      "skipped_no_command": 0,
+      "target": false,
+      "trajectory_id": "nebius-r8"
+    },
+    {
+      "eval_logs_chars": 13127,
+      "exit_status": "submitted (exit_context)",
+      "generated_patch_chars": 3570,
+      "instance_id": "PyCQA__pyflakes-761",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 95,
+      "n_steps": 47,
+      "redactions": 0,
+      "row_index": 74,
+      "skipped_no_command": 0,
+      "target": false,
+      "trajectory_id": "nebius-r74"
+    },
+    {
+      "eval_logs_chars": 33519,
+      "exit_status": "submitted",
+      "generated_patch_chars": 120,
+      "instance_id": "asottile__pyupgrade-142",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 15,
+      "n_steps": 7,
+      "redactions": 0,
+      "row_index": 188,
+      "skipped_no_command": 0,
+      "target": false,
+      "trajectory_id": "nebius-r188"
+    },
+    {
+      "eval_logs_chars": 0,
+      "exit_status": "submitted",
+      "generated_patch_chars": 0,
+      "instance_id": "asottile__pyupgrade-147",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 29,
+      "n_steps": 14,
+      "redactions": 0,
+      "row_index": 244,
+      "skipped_no_command": 0,
+      "target": false,
+      "trajectory_id": "nebius-r244"
+    },
+    {
+      "eval_logs_chars": 2760,
+      "exit_status": "submitted",
+      "generated_patch_chars": 998,
+      "instance_id": "bihealth__biomedsheets-23",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 29,
+      "n_steps": 14,
+      "redactions": 1,
+      "row_index": 333,
+      "skipped_no_command": 0,
+      "target": false,
+      "trajectory_id": "nebius-r333"
+    },
+    {
+      "eval_logs_chars": 3300,
+      "exit_status": "submitted",
+      "generated_patch_chars": 386,
+      "instance_id": "casbin__pycasbin-53",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 45,
+      "n_steps": 22,
+      "redactions": 0,
+      "row_index": 359,
+      "skipped_no_command": 0,
+      "target": false,
+      "trajectory_id": "nebius-r359"
+    },
+    {
+      "eval_logs_chars": 2631,
+      "exit_status": "submitted",
+      "generated_patch_chars": 1192,
+      "instance_id": "iterative__dvc-7205",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 29,
+      "n_steps": 14,
+      "redactions": 0,
+      "row_index": 591,
+      "skipped_no_command": 0,
+      "target": false,
+      "trajectory_id": "nebius-r591"
+    },
+    {
+      "eval_logs_chars": 2903,
+      "exit_status": "submitted",
+      "generated_patch_chars": 1139,
+      "instance_id": "just-work__fffw-100",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 29,
+      "n_steps": 14,
+      "redactions": 0,
+      "row_index": 654,
+      "skipped_no_command": 0,
+      "target": false,
+      "trajectory_id": "nebius-r654"
+    },
+    {
+      "eval_logs_chars": 5491,
+      "exit_status": "submitted",
+      "generated_patch_chars": 591,
+      "instance_id": "networkx__networkx-7024",
+      "model_name": "swe-agent-llama-8b",
+      "n_messages": 39,
+      "n_steps": 19,
+      "redactions": 0,
+      "row_index": 752,
+      "skipped_no_command": 0,
+      "target": true,
+      "trajectory_id": "nebius-r752"
+    },
+    {
+      "eval_logs_chars": 5491,
+      "exit_status": "submitted",
+      "generated_patch_chars": 629,
+      "instance_id": "networkx__networkx-7024",
+      "model_name": "swe-agent-llama-70b",
+      "n_messages": 19,
+      "n_steps": 9,
+      "redactions": 0,
+      "row_index": 770,
+      "skipped_no_command": 0,
+      "target": true,
+      "trajectory_id": "nebius-r770"
+    }
+  ],
+  "truncation": {
+    "agent_text_chars": 500,
+    "mark": "\u2026[truncated]",
+    "tool_input_chars": 1500,
+    "tool_output_chars": 800
+  }
+}

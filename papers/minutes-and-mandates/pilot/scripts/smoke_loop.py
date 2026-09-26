@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Week-1 smoke loop. Dry-run mock by default. Not a pilot result.
 
-Loads OrgPolicy cards or matched prose, walks a tiny fixture JSONL in
-fixed order, and logs allow/escalate/block decisions. Real Nebius
-trajectory download and gold labels are still human week-1 work.
+Loads OrgPolicy cards or matched prose, walks step JSONL in fixed order,
+and logs allow/escalate/block decisions. The default input is the 3-step
+fixture. `--steps` can point at the generated inject candidates.
+
+The judge is a dry-run mock. It does not read labels and it does not fill
+token or time fields. Gold labels are still a human labeling task.
 
 OPENAI_API_KEY is optional and unused. This stub never calls the network.
 """
@@ -39,18 +42,29 @@ def load_artifact(condition: str) -> str:
     raise SystemExit(f"unknown condition {condition}")
 
 
-def load_steps(path: Path) -> list[dict]:
+def load_steps(path: Path, *, fixture_mode: bool) -> list[dict]:
     steps = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if line.strip():
-            steps.append(json.loads(line))
-    if not 2 <= len(steps) <= 3:
+    for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise SystemExit(f"{path}:{line_no}: {exc}") from exc
+        if not isinstance(obj, dict):
+            raise SystemExit(f"{path}:{line_no}: expected a JSON object")
+        if "trajectory_id" not in obj or "step_id" not in obj:
+            raise SystemExit(f"{path}:{line_no}: missing trajectory_id or step_id")
+        steps.append(obj)
+    if not steps:
+        raise SystemExit(f"no steps in {path}")
+    if fixture_mode and not 2 <= len(steps) <= 3:
         raise SystemExit(f"fixture must have 2–3 steps, found {len(steps)}")
     return steps
 
 
 def mock_judge(step: dict, policy_text: str) -> dict:
-    """Deterministic dry-run. Does not score violations."""
+    """Deterministic dry-run. Does not score violations or read proposed labels."""
     del step, policy_text
     return {
         "decision": "allow",
@@ -94,23 +108,46 @@ def main() -> int:
         default="both",
         help="A=cards, B=prose, or both in the same step order",
     )
+    parser.add_argument(
+        "--steps",
+        type=Path,
+        default=None,
+        help="Step JSONL to judge. Default: the 3-step fixture.",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Use only the first N steps, in file order, for every condition.",
+    )
+    parser.add_argument("--log-dir", type=Path, default=LOG_DIR)
     args = parser.parse_args()
-    steps = load_steps(FIXTURE)
+    steps_path = args.steps or FIXTURE
+    steps = load_steps(steps_path, fixture_mode=args.steps is None)
+    if args.limit is not None:
+        if args.limit < 1:
+            raise SystemExit("--limit must be >= 1")
+        steps = steps[: args.limit]
     order = [s["step_id"] for s in steps]
     conditions = ["cards", "prose"] if args.condition == "both" else [args.condition]
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    args.log_dir.mkdir(parents=True, exist_ok=True)
     written = []
     for condition in conditions:
         rows = run(condition, steps)
+        for row in rows:
+            if row["tokens_in"] is not None or row["tokens_out"] is not None or row["wall_time_ms"] is not None:
+                raise SystemExit("dry-run filled a token or time field")
+            if row["judge"] != "dry-run-mock":
+                raise SystemExit("dry-run swapped in a real judge")
         got = [r["step_id"] for r in rows]
         if got != order:
             raise SystemExit(f"step order drifted for {condition}: {got} != {order}")
-        out = LOG_DIR / f"smoke_{condition}.jsonl"
+        out = args.log_dir / f"smoke_{condition}.jsonl"
         out.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
         written.append(out)
         print(f"{condition}: {len(rows)} steps, order={got}, log={out}")
     print("Dry-run only. Token/time fields are null. Not a pilot metric.")
-    print("Real Nebius trajectories and gold labels are still human week-1 work.")
+    print("Gold labels are still human work. This mock does not judge violations.")
     return 0
 
 
